@@ -8,7 +8,7 @@ locals {
   vpc_id          = module.global_constants.vpc_id[var.environment]
   env_name        = "${var.name}-${var.environment}"
   private_subnets = module.global_constants.private_subnets[var.environment]
-  ecs_cluster     = "arn:aws:ecs:${local.aws_region}:${local.aws_account_id}:cluster/default" # change me later
+  ecs_cluster     = "arn:aws:ecs:${local.aws_region}:${local.aws_account_id}:cluster/${var.environment}"
   default_tags = {
     "Environment" : var.environment
     "App name" : var.name
