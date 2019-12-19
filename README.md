@@ -19,6 +19,28 @@ Additionally, this module creates an IAM role for the Fargate service to authori
 <table>
 <tr><th>Name</th><th>Description</th><th>Type</th><th>Default</th> <th>Required</th></tr>
 <tr>
+<td>cloudwatch_evaluation_periods</td>
+<td>The number of times a metric must exceed thresholds before an alarm triggers. For example, if `period` is set to 60 seconds, and this is set to 2, a given threshold must have been exceeded twice over 120 seconds.</td>
+<td>
+
+`number`</td>
+<td>
+
+`2`</td>
+<td>no</td>
+</tr>
+<tr>
+<td>cloudwatch_period</td>
+<td>The time in seconds CloudWatch alarms will consider a 'period'. By default, CloudWatch metrics only have a granularity of 60s, or in rare cases 180 or 300 seconds.</td>
+<td>
+
+`number`</td>
+<td>
+
+`60`</td>
+<td>no</td>
+</tr>
+<tr>
 <td>container_ports</td>
 <td>A list of ports the container listens on. Used for generating ECS Task Definition Container Definitions</td>
 <td>
@@ -38,6 +60,28 @@ Additionally, this module creates an IAM role for the Fargate service to authori
 <td>
 
 `256`</td>
+<td>no</td>
+</tr>
+<tr>
+<td>cpu_high_threshold</td>
+<td>The CPU percentage to be considered 'high' for autoscaling purposes.</td>
+<td>
+
+`number`</td>
+<td>
+
+`70`</td>
+<td>no</td>
+</tr>
+<tr>
+<td>cpu_low_threshold</td>
+<td>The CPU percentage to be considered 'low' for autoscaling purposes. This was set to a 'safe' value to prevent scaling down when it's not a good idea, but please adjust this higher for your app if possible.</td>
+<td>
+
+`number`</td>
+<td>
+
+`20`</td>
 <td>no</td>
 </tr>
 <tr>
@@ -114,6 +158,17 @@ list(object({
 <td>no</td>
 </tr>
 <tr>
+<td>max_capacity</td>
+<td>The maximum number of tasks allowed to run at any given time.</td>
+<td>
+
+`number`</td>
+<td>
+
+`8`</td>
+<td>no</td>
+</tr>
+<tr>
 <td>memory</td>
 <td>The memory to provide the container in MiB. 512 is min, 30720 is max. Find valid values here: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html</td>
 <td>
@@ -122,6 +177,17 @@ list(object({
 <td>
 
 `512`</td>
+<td>no</td>
+</tr>
+<tr>
+<td>min_capacity</td>
+<td>The minimum number of tasks allowed to run at any given time.</td>
+<td>
+
+`number`</td>
+<td>
+
+`2`</td>
 <td>no</td>
 </tr>
 <tr>
@@ -134,6 +200,61 @@ list(object({
 
 n/a</td>
 <td>yes</td>
+</tr>
+<tr>
+<td>scale_down_adjustment</td>
+<td>The number of tasks to stop during a scale down event. Be VERY CAREFUL changing this default. For example, if this was set to -2, and the service has 4 tasks running at present, scaling down would remove half the capacity of the service. If you want to scale down more aggressively, consider changing `scale_down_cooldown` instead.</td>
+<td>
+
+`number`</td>
+<td>
+
+`-1`</td>
+<td>no</td>
+</tr>
+<tr>
+<td>scale_down_cooldown</td>
+<td>The minimum amount of time in seconds between subsequent scale down events firing. This should be somewhat longer than a scale up cooldown to prevent service degradation by quickly changing capacity, but being shorter does give us cost savings.</td>
+<td>
+
+`number`</td>
+<td>
+
+`300`</td>
+<td>no</td>
+</tr>
+<tr>
+<td>scale_up_adjustment</td>
+<td>The number of tasks to add during a scale up event. If a service sees high spiky load that needs immediate response times, it may be appropriate to nudge this up.</td>
+<td>
+
+`number`</td>
+<td>
+
+`1`</td>
+<td>no</td>
+</tr>
+<tr>
+<td>scale_up_cooldown</td>
+<td>The minimum amount of time in seconds between subsequent scale up events firing. This should be long enough to allow an app to start up, begin serving traffic, and get new aggregate averages of service load, but short enough to scale quickly and responsively.</td>
+<td>
+
+`number`</td>
+<td>
+
+`90`</td>
+<td>no</td>
+</tr>
+<tr>
+<td>scaling_enabled</td>
+<td>A boolean if autoscaling should be turned on or off</td>
+<td>
+
+`bool`</td>
+<td>
+
+`true`</td>
+<td>no</td>
 </tr>
 <tr>
 <td>secrets</td>
