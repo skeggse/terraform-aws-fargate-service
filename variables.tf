@@ -64,3 +64,69 @@ variable "load_balancer_config" {
   }))
   default = []
 }
+
+variable "scaling_enabled" {
+  description = "A boolean if autoscaling should be turned on or off"
+  type        = bool
+  default     = true
+}
+
+variable "min_capacity" {
+  description = "The minimum number of tasks allowed to run at any given time."
+  type        = number
+  default     = 2
+}
+
+variable "max_capacity" {
+  description = "The maximum number of tasks allowed to run at any given time."
+  type        = number
+  default     = 8
+}
+
+variable "scale_up_cooldown" {
+  description = "The minimum amount of time in seconds between subsequent scale up events firing. This should be long enough to allow an app to start up, begin serving traffic, and get new aggregate averages of service load, but short enough to scale quickly and responsively."
+  type        = number
+  default     = 90
+}
+
+variable "scale_up_adjustment" {
+  description = "The number of tasks to add during a scale up event. If a service sees high spiky load that needs immediate response times, it may be appropriate to nudge this up."
+  type        = number
+  default     = 1
+}
+
+variable "scale_down_cooldown" {
+  description = "The minimum amount of time in seconds between subsequent scale down events firing. This should be somewhat longer than a scale up cooldown to prevent service degradation by quickly changing capacity, but being shorter does give us cost savings."
+  type        = number
+  default     = 300
+}
+
+variable "scale_down_adjustment" {
+  description = "The number of tasks to stop during a scale down event. Be VERY CAREFUL changing this default. For example, if this was set to -2, and the service has 4 tasks running at present, scaling down would remove half the capacity of the service. If you want to scale down more aggressively, consider changing `scale_down_cooldown` instead."
+  type        = number
+  default     = -1
+}
+
+variable "cloudwatch_evaluation_periods" {
+  description = "The number of times a metric must exceed thresholds before an alarm triggers. For example, if `period` is set to 60 seconds, and this is set to 2, a given threshold must have been exceeded twice over 120 seconds."
+  type        = number
+  default     = 2
+}
+
+variable "cloudwatch_period" {
+  description = "The time in seconds CloudWatch alarms will consider a 'period'. By default, CloudWatch metrics only have a granularity of 60s, or in rare cases 180 or 300 seconds."
+  type        = number
+  default     = 60
+}
+
+variable "cpu_high_threshold" {
+  description = "The CPU percentage to be considered 'high' for autoscaling purposes."
+  type        = number
+  default     = 70
+}
+
+variable "cpu_low_threshold" {
+  description = "The CPU percentage to be considered 'low' for autoscaling purposes. This was set to a 'safe' value to prevent scaling down when it's not a good idea, but please adjust this higher for your app if possible."
+  type        = number
+  default     = 20
+}
