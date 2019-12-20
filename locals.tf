@@ -3,12 +3,13 @@ module "global_constants" {
 }
 
 locals {
-  aws_account_id  = module.global_constants.aws_account_id[var.environment]
-  aws_region      = module.global_constants.aws_region[var.environment]
-  vpc_id          = module.global_constants.vpc_id[var.environment]
-  env_name        = "${var.name}-${var.environment}"
-  private_subnets = module.global_constants.private_subnets[var.environment]
-  ecs_cluster     = "arn:aws:ecs:${local.aws_region}:${local.aws_account_id}:cluster/${var.environment}"
+  aws_account_id   = module.global_constants.aws_account_id[var.environment]
+  aws_region       = module.global_constants.aws_region[var.environment]
+  vpc_id           = module.global_constants.vpc_id[var.environment]
+  env_name         = "${var.name}-${var.environment}"
+  private_subnets  = module.global_constants.private_subnets[var.environment]
+  ecs_cluster      = "arn:aws:ecs:${local.aws_region}:${local.aws_account_id}:cluster/${var.environment}"
+  ecs_cluster_name = var.environment
   default_tags = {
     "Environment" : var.environment
     "App name" : var.name

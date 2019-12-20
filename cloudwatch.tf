@@ -1,14 +1,14 @@
 resource "aws_appautoscaling_target" "ecs" {
   min_capacity       = var.min_capacity
   max_capacity       = var.max_capacity
-  resource_id        = "service/${var.environment}/${var.name}-${var.environment}"
+  resource_id        = "service/${local.ecs_cluster_name}/${aws_ecs_service.service.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 }
 
 resource "aws_appautoscaling_policy" "up" {
   count              = var.scaling_enabled ? 1 : 0
-  name               = "${var.name}-${var.environment}-scale-up"
+  name               = "${local.env_name}-scale-up"
   service_namespace  = aws_appautoscaling_target.ecs.service_namespace
   resource_id        = aws_appautoscaling_target.ecs.resource_id
   scalable_dimension = aws_appautoscaling_target.ecs.scalable_dimension
@@ -27,7 +27,7 @@ resource "aws_appautoscaling_policy" "up" {
 
 resource "aws_appautoscaling_policy" "down" {
   count              = var.scaling_enabled ? 1 : 0
-  name               = "${var.name}-${var.environment}-scale-down"
+  name               = "${local.env_name}-scale-down"
   service_namespace  = aws_appautoscaling_target.ecs.service_namespace
   resource_id        = aws_appautoscaling_target.ecs.resource_id
   scalable_dimension = aws_appautoscaling_target.ecs.scalable_dimension
@@ -46,7 +46,7 @@ resource "aws_appautoscaling_policy" "down" {
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_high" {
   count               = var.scaling_enabled ? 1 : 0
-  alarm_name          = "${var.name}-${var.environment}-cpu-high-alarm"
+  alarm_name          = "${local.env_name}-cpu-high-alarm"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = var.cloudwatch_evaluation_periods
   metric_name         = "CPUUtilization"
@@ -55,19 +55,19 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_high" {
   statistic           = "Average"
   threshold           = var.cpu_high_threshold
 
-  alarm_description = "CPU high on ${var.name}-${var.environment}"
+  alarm_description = "CPU high on ${local.env_name}"
 
   alarm_actions = [aws_appautoscaling_policy.up[0].arn]
 
   dimensions = {
-    ClusterName = var.environment
-    ServiceName = "${var.name}-${var.environment}"
+    ClusterName = local.ecs_cluster_name
+    ServiceName = local.env_name
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_low" {
   count               = var.scaling_enabled ? 1 : 0
-  alarm_name          = "${var.name}-${var.environment}-cpu-low-alarm"
+  alarm_name          = "${local.env_name}-cpu-low-alarm"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = var.cloudwatch_evaluation_periods
   metric_name         = "CPUUtilization"
@@ -76,12 +76,12 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_low" {
   statistic           = "Average"
   threshold           = var.cpu_low_threshold
 
-  alarm_description = "CPU low on ${var.name}-${var.environment}"
+  alarm_description = "CPU low on ${local.env_name}"
 
   alarm_actions = [aws_appautoscaling_policy.down[0].arn]
 
   dimensions = {
-    ClusterName = var.environment
-    ServiceName = "${var.name}-${var.environment}"
+    ClusterName = local.ecs_cluster_name
+    ServiceName = local.env_name
   }
 }
