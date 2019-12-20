@@ -33,6 +33,7 @@ module "task_definition" {
   image                    = var.image
   network_mode             = "awsvpc"
   portMappings             = local.port_mappings
+  command                  = var.task_command
   requires_compatibilities = ["FARGATE"]
   secrets                  = var.secrets
   tags                     = local.tags
