@@ -4,6 +4,7 @@ resource "aws_iam_role" "task" {
   assume_role_policy = file(
     "${path.module}/policies/ecs-assume-role-policy.json",
   )
+  tags = merge(local.tags, { "Name" : "${local.env_name}-fg-role" })
 }
 
 ## Fargate Task default security group
@@ -18,6 +19,8 @@ resource "aws_security_group" "task" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = merge(local.tags, { "Name" : "${local.env_name}-sg" })
 }
 
 module "task_definition" {
@@ -44,6 +47,8 @@ resource "aws_ecs_service" "service" {
   launch_type     = "FARGATE"
   task_definition = module.task_definition.arn
   desired_count   = 2
+  tags            = local.tags
+  propagate_tags  = "SERVICE"
 
   dynamic "load_balancer" {
     for_each = var.load_balancer_config

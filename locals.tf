@@ -12,7 +12,7 @@ locals {
   ecs_cluster_name = var.environment
   default_tags = {
     "Environment" : var.environment
-    "App name" : var.name
+    "Name" : var.name
     "Public" : var.is_public
   }
   tags = merge(local.default_tags, var.custom_tags)
