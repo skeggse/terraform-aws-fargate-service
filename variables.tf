@@ -130,3 +130,9 @@ variable "cpu_low_threshold" {
   type        = number
   default     = 20
 }
+
+variable "task_command" {
+  description = "The command to pass directly to the docker container, according to this syntax: https://docs.docker.com/engine/reference/builder/#cmd"
+  type        = list(string)
+  default     = []
+}

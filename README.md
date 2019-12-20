@@ -267,6 +267,17 @@ n/a</td>
 `[]`</td>
 <td>no</td>
 </tr>
+<tr>
+<td>task_command</td>
+<td>The command to pass directly to the docker container, according to this syntax: https://docs.docker.com/engine/reference/builder/#cmd</td>
+<td>
+
+`list(string)`</td>
+<td>
+
+`[]`</td>
+<td>no</td>
+</tr>
 </table>
 
 ## Outputs
