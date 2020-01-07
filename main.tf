@@ -24,7 +24,7 @@ resource "aws_security_group" "task" {
 }
 
 module "task_definition" {
-  source                   = "git@github.com:mixmaxhq/terraform-aws-ecs-task-definition?ref=v1.2.0"
+  source                   = "git@github.com:mixmaxhq/terraform-aws-ecs-task-definition?ref=v1.2.2"
   family                   = local.env_name
   name                     = local.env_name
   cpu                      = var.cpu
@@ -39,7 +39,7 @@ module "task_definition" {
   tags                     = local.tags
   task_role_arn            = aws_iam_role.task.arn
   execution_role_arn       = "arn:aws:iam::${local.aws_account_id}:role/ecsTaskExecutionRole"
-
+  logConfiguration         = var.log_config
 }
 
 resource "aws_ecs_service" "service" {
