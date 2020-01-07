@@ -65,6 +65,12 @@ variable "load_balancer_config" {
   default = []
 }
 
+variable "log_config" {
+  description = "A logConfiguration as described in https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_awslogs.html . Default is nothing."
+  type        = any
+  default     = {}
+}
+
 variable "scaling_enabled" {
   description = "A boolean if autoscaling should be turned on or off"
   type        = bool

@@ -16,134 +16,130 @@ Additionally, this module creates an IAM role for the Fargate service to authori
 
 ## Variables
 
-<table>
-<tr><th>Name</th><th>Description</th><th>Type</th><th>Default</th> <th>Required</th></tr>
-<tr>
-<td>cloudwatch_evaluation_periods</td>
-<td>The number of times a metric must exceed thresholds before an alarm triggers. For example, if `period` is set to 60 seconds, and this is set to 2, a given threshold must have been exceeded twice over 120 seconds.</td>
-<td>
+### Required Variables
 
-`number`</td>
-<td>
+The following variables are required:
 
-`2`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>cloudwatch_period</td>
-<td>The time in seconds CloudWatch alarms will consider a 'period'. By default, CloudWatch metrics only have a granularity of 60s, or in rare cases 180 or 300 seconds.</td>
-<td>
+#### environment
 
-`number`</td>
-<td>
+Description: The environment to deploy into. Some valid values are production, staging, engineering.
 
-`60`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>container_ports</td>
-<td>A list of ports the container listens on. Used for generating ECS Task Definition Container Definitions</td>
-<td>
+Type:
+`string`
 
-`list(string)`</td>
-<td>
+#### image
 
-`[]`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>cpu</td>
-<td>The CPU credits to provide container. 256 is .25 vCPUs, 1024 is 1 vCPU, max is 4096 (4 vCPUs). Find valid values here: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html</td>
-<td>
+Description: The image to launch. This is passed directly to the Docker engine. An example is 012345678910.dkr.ecr.us-east-1.amazonaws.com/hello-world:latest
 
-`number`</td>
-<td>
+Type:
+`string`
 
-`256`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>cpu_high_threshold</td>
-<td>The CPU percentage to be considered 'high' for autoscaling purposes.</td>
-<td>
+#### name
 
-`number`</td>
-<td>
+Description: The name of the service to launch
 
-`70`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>cpu_low_threshold</td>
-<td>The CPU percentage to be considered 'low' for autoscaling purposes. This was set to a 'safe' value to prevent scaling down when it's not a good idea, but please adjust this higher for your app if possible.</td>
-<td>
+Type:
+`string`
 
-`number`</td>
-<td>
+### Optional Variables
 
-`20`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>custom_tags</td>
-<td>A mapping of custom tags to add to the generated resources.</td>
-<td>
+The following variables are optional (have default values):
 
-`map(string)`</td>
-<td>
+#### cloudwatch\_evaluation\_periods
 
-`{}`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>environment</td>
-<td>The environment to deploy into. Some valid values are production, staging, engineering.</td>
-<td>
+Description: The number of times a metric must exceed thresholds before an alarm triggers. For example, if `period` is set to 60 seconds, and this is set to 2, a given threshold must have been exceeded twice over 120 seconds.
 
-`string`</td>
-<td>
+Type:
+`number`
 
-n/a</td>
-<td>yes</td>
-</tr>
-<tr>
-<td>environment_vars</td>
-<td>A list of maps of environment variables to provide to the container. Do not put secrets here; instead use the `secrets` input to specify the ARN of a Parameter Store or Secrets Manager value.</td>
-<td>
+Default:
+`2`
 
-`list(map(string))`</td>
-<td>
+#### cloudwatch\_period
 
-`[]`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>image</td>
-<td>The image to launch. This is passed directly to the Docker engine. An example is 012345678910.dkr.ecr.us-east-1.amazonaws.com/hello-world:latest</td>
-<td>
+Description: The time in seconds CloudWatch alarms will consider a 'period'. By default, CloudWatch metrics only have a granularity of 60s, or in rare cases 180 or 300 seconds.
 
-`string`</td>
-<td>
+Type:
+`number`
 
-n/a</td>
-<td>yes</td>
-</tr>
-<tr>
-<td>is_public</td>
-<td>A boolean describing if the service is public or internal only. In this module, this is only used for tagging.</td>
-<td>
+Default:
+`60`
 
-`bool`</td>
-<td>
+#### container\_ports
 
-`false`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>load_balancer_config</td>
-<td>A list of objects describing load balancer configs: https://www.terraform.io/docs/providers/aws/r/ecs_service.html#load_balancer-1</td>
-<td>
+Description: A list of ports the container listens on. Used for generating ECS Task Definition Container Definitions
 
+Type:
+`list(string)`
+
+Default:
+`[]`
+
+#### cpu
+
+Description: The CPU credits to provide container. 256 is .25 vCPUs, 1024 is 1 vCPU, max is 4096 (4 vCPUs). Find valid values here: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
+
+Type:
+`number`
+
+Default:
+`256`
+
+#### cpu\_high\_threshold
+
+Description: The CPU percentage to be considered 'high' for autoscaling purposes.
+
+Type:
+`number`
+
+Default:
+`70`
+
+#### cpu\_low\_threshold
+
+Description: The CPU percentage to be considered 'low' for autoscaling purposes. This was set to a 'safe' value to prevent scaling down when it's not a good idea, but please adjust this higher for your app if possible.
+
+Type:
+`number`
+
+Default:
+`20`
+
+#### custom\_tags
+
+Description: A mapping of custom tags to add to the generated resources.
+
+Type:
+`map(string)`
+
+Default:
+`{}`
+
+#### environment\_vars
+
+Description: A list of maps of environment variables to provide to the container. Do not put secrets here; instead use the `secrets` input to specify the ARN of a Parameter Store or Secrets Manager value.
+
+Type:
+`list(map(string))`
+
+Default:
+`[]`
+
+#### is\_public
+
+Description: A boolean describing if the service is public or internal only. In this module, this is only used for tagging.
+
+Type:
+`bool`
+
+Default:
+`false`
+
+#### load\_balancer\_config
+
+Description: A list of objects describing load balancer configs: https://www.terraform.io/docs/providers/aws/r/ecs_service.html#load_balancer-1
+
+Type:
 ```hcl
 list(object({
     target_group_arn = string
@@ -151,139 +147,129 @@ list(object({
     container_port   = number
   }))
 ```
-</td>
-<td>
 
-`[]`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>max_capacity</td>
-<td>The maximum number of tasks allowed to run at any given time.</td>
-<td>
+Default:
+`[]`
 
-`number`</td>
-<td>
+#### log\_config
 
-`8`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>memory</td>
-<td>The memory to provide the container in MiB. 512 is min, 30720 is max. Find valid values here: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html</td>
-<td>
+Description: A logConfiguration as described in https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_awslogs.html . Default is nothing.
 
-`number`</td>
-<td>
+Type:
+`any`
 
-`512`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>min_capacity</td>
-<td>The minimum number of tasks allowed to run at any given time.</td>
-<td>
+Default:
+`{}`
 
-`number`</td>
-<td>
+#### max\_capacity
 
-`2`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>name</td>
-<td>The name of the service to launch</td>
-<td>
+Description: The maximum number of tasks allowed to run at any given time.
 
-`string`</td>
-<td>
+Type:
+`number`
 
-n/a</td>
-<td>yes</td>
-</tr>
-<tr>
-<td>scale_down_adjustment</td>
-<td>The number of tasks to stop during a scale down event. Be VERY CAREFUL changing this default. For example, if this was set to -2, and the service has 4 tasks running at present, scaling down would remove half the capacity of the service. If you want to scale down more aggressively, consider changing `scale_down_cooldown` instead.</td>
-<td>
+Default:
+`8`
 
-`number`</td>
-<td>
+#### memory
 
-`-1`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>scale_down_cooldown</td>
-<td>The minimum amount of time in seconds between subsequent scale down events firing. This should be somewhat longer than a scale up cooldown to prevent service degradation by quickly changing capacity, but being shorter does give us cost savings.</td>
-<td>
+Description: The memory to provide the container in MiB. 512 is min, 30720 is max. Find valid values here: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
 
-`number`</td>
-<td>
+Type:
+`number`
 
-`300`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>scale_up_adjustment</td>
-<td>The number of tasks to add during a scale up event. If a service sees high spiky load that needs immediate response times, it may be appropriate to nudge this up.</td>
-<td>
+Default:
+`512`
 
-`number`</td>
-<td>
+#### min\_capacity
 
-`1`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>scale_up_cooldown</td>
-<td>The minimum amount of time in seconds between subsequent scale up events firing. This should be long enough to allow an app to start up, begin serving traffic, and get new aggregate averages of service load, but short enough to scale quickly and responsively.</td>
-<td>
+Description: The minimum number of tasks allowed to run at any given time.
 
-`number`</td>
-<td>
+Type:
+`number`
 
-`90`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>scaling_enabled</td>
-<td>A boolean if autoscaling should be turned on or off</td>
-<td>
+Default:
+`2`
 
-`bool`</td>
-<td>
+#### scale\_down\_adjustment
 
-`true`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>secrets</td>
-<td>A list of maps of ARNs of secrets stored in Parameter Store or Secrets Manager and exposed as environment variables. Do not put actual secrets here! See examples/simple for usage.</td>
-<td>
+Description: The number of tasks to stop during a scale down event. Be VERY CAREFUL changing this default. For example, if this was set to -2, and the service has 4 tasks running at present, scaling down would remove half the capacity of the service. If you want to scale down more aggressively, consider changing `scale_down_cooldown` instead.
 
-`list(string)`</td>
-<td>
+Type:
+`number`
 
-`[]`</td>
-<td>no</td>
-</tr>
-<tr>
-<td>task_command</td>
-<td>The command to pass directly to the docker container, according to this syntax: https://docs.docker.com/engine/reference/builder/#cmd</td>
-<td>
+Default:
+`-1`
 
-`list(string)`</td>
-<td>
+#### scale\_down\_cooldown
 
-`[]`</td>
-<td>no</td>
-</tr>
-</table>
+Description: The minimum amount of time in seconds between subsequent scale down events firing. This should be somewhat longer than a scale up cooldown to prevent service degradation by quickly changing capacity, but being shorter does give us cost savings.
+
+Type:
+`number`
+
+Default:
+`300`
+
+#### scale\_up\_adjustment
+
+Description: The number of tasks to add during a scale up event. If a service sees high spiky load that needs immediate response times, it may be appropriate to nudge this up.
+
+Type:
+`number`
+
+Default:
+`1`
+
+#### scale\_up\_cooldown
+
+Description: The minimum amount of time in seconds between subsequent scale up events firing. This should be long enough to allow an app to start up, begin serving traffic, and get new aggregate averages of service load, but short enough to scale quickly and responsively.
+
+Type:
+`number`
+
+Default:
+`90`
+
+#### scaling\_enabled
+
+Description: A boolean if autoscaling should be turned on or off
+
+Type:
+`bool`
+
+Default:
+`true`
+
+#### secrets
+
+Description: A list of maps of ARNs of secrets stored in Parameter Store or Secrets Manager and exposed as environment variables. Do not put actual secrets here! See examples/simple for usage.
+
+Type:
+`list(string)`
+
+Default:
+`[]`
+
+#### task\_command
+
+Description: The command to pass directly to the docker container, according to this syntax: https://docs.docker.com/engine/reference/builder/#cmd
+
+Type:
+`list(string)`
+
+Default:
+`[]`
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| task\_role\_name | The ARN of the IAM Role created for the Fargate service |
-| task\_sg\_id | The ID of the Security Group attached to Fargate Tasks |
+The following outputs are exported:
+
+#### task\_role\_name
+
+Description: The ARN of the IAM Role created for the Fargate service
+
+#### task\_sg\_id
+
+Description: The ID of the Security Group attached to Fargate Tasks
 
