@@ -9,8 +9,9 @@ variable "environment" {
 }
 
 variable "image" {
-  description = "The image to launch. This is passed directly to the Docker engine. An example is 012345678910.dkr.ecr.us-east-1.amazonaws.com/hello-world:latest"
+  description = "The image to launch. This is passed directly to the Docker engine. An example is 012345678910.dkr.ecr.us-east-1.amazonaws.com/hello-world:latest; the default is an nginx hello world."
   type        = string
+  default     = "nginxdemos/hello:latest"
 }
 
 variable "is_public" {
