@@ -12,7 +12,18 @@ An example deployable application can be found in the [examples/simple](examples
 
 This module creates a security group (ie a firewall) for communicating with the service over the network. By default, it allows all traffic originating from the container (in other words, all `egress` traffic is allowed). However, if you would like to communicate inbound to the container from another service, you must create an [`aws_security_group_rule`](https://www.terraform.io/docs/providers/aws/r/security_group_rule.html) resource referencing the Fargate service's security group. The module-created security group is available as the output `task_sg_id`. You can see an example of this in the terraform-aws-fargate-service-with-lb module.
 
-Additionally, this module creates an IAM role for the Fargate service to authorize access to AWS resources. By default, these services get no permissions. To add permissions to an AWS resource, create an [`aws_iam_policy` resource](https://www.terraform.io/docs/providers/aws/r/iam_policy.html) and [attach the policy to the role using an `aws_iam_role_policy_attachment` resource](https://www.terraform.io/docs/providers/aws/r/iam_role_policy_attachment.html). The module-created IAM role name is available as the output `task_role_name` from the module.
+This module creates an IAM role for use with a task definition to authorize access to AWS resources. This is created as a convenience; to use this IAM role, you will need to specify it in your task definition's [`taskRoleArn`](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_role_arn). By default, these services get no permissions. To add permissions to an AWS resource, create an [`aws_iam_policy` resource](https://www.terraform.io/docs/providers/aws/r/iam_policy.html) and [attach the policy to the role using an `aws_iam_role_policy_attachment` resource](https://www.terraform.io/docs/providers/aws/r/iam_role_policy_attachment.html). The module-created IAM role name is available as the output `task_role_name` from the module.
+
+This module creates a CloudWatch log group for use with a task definition to ship logs. This is created as a convenience; to use this log group, you will need to specify it in your task definition's [`logConfiguration`](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_awslogs.html#specify-log-config). If you have generated your task definition using the `mixmax` CLI, you probably don't need to do anything.
+
+## How are the docs generated?
+
+Manually, something like this:
+
+```
+terraform-docs md document . >> README.md
+# and edit out the old stuff
+```
 
 ## Variables
 
@@ -27,16 +38,16 @@ Description: The environment to deploy into. Some valid values are production, s
 Type:
 `string`
 
-#### image
+#### name
 
-Description: The image to launch. This is passed directly to the Docker engine. An example is 012345678910.dkr.ecr.us-east-1.amazonaws.com/hello-world:latest
+Description: The name of the application to launch
 
 Type:
 `string`
 
-#### name
+#### service
 
-Description: The name of the service to launch
+Description: The name of the service this app is associated with; ie 'send' if the app was 'send-worker'
 
 Type:
 `string`
@@ -64,26 +75,6 @@ Type:
 
 Default:
 `60`
-
-#### container\_ports
-
-Description: A list of ports the container listens on. Used for generating ECS Task Definition Container Definitions
-
-Type:
-`list(string)`
-
-Default:
-`[]`
-
-#### cpu
-
-Description: The CPU credits to provide container. 256 is .25 vCPUs, 1024 is 1 vCPU, max is 4096 (4 vCPUs). Find valid values here: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
-
-Type:
-`number`
-
-Default:
-`256`
 
 #### cpu\_high\_threshold
 
@@ -115,16 +106,6 @@ Type:
 Default:
 `{}`
 
-#### environment\_vars
-
-Description: A list of maps of environment variables to provide to the container. Do not put secrets here; instead use the `secrets` input to specify the ARN of a Parameter Store or Secrets Manager value.
-
-Type:
-`list(map(string))`
-
-Default:
-`[]`
-
 #### is\_public
 
 Description: A boolean describing if the service is public or internal only. In this module, this is only used for tagging.
@@ -151,16 +132,6 @@ list(object({
 Default:
 `[]`
 
-#### log\_config
-
-Description: A logConfiguration as described in https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_awslogs.html . Default is nothing.
-
-Type:
-`any`
-
-Default:
-`{}`
-
 #### max\_capacity
 
 Description: The maximum number of tasks allowed to run at any given time.
@@ -170,16 +141,6 @@ Type:
 
 Default:
 `8`
-
-#### memory
-
-Description: The memory to provide the container in MiB. 512 is min, 30720 is max. Find valid values here: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
-
-Type:
-`number`
-
-Default:
-`512`
 
 #### min\_capacity
 
@@ -241,31 +202,35 @@ Type:
 Default:
 `true`
 
-#### secrets
+#### service\_subnets
 
-Description: A list of maps of ARNs of secrets stored in Parameter Store or Secrets Manager and exposed as environment variables. Do not put actual secrets here! See examples/simple for usage.
-
-Type:
-`list(string)`
-
-Default:
-`[]`
-
-#### task\_command
-
-Description: The command to pass directly to the docker container, according to this syntax: https://docs.docker.com/engine/reference/builder/#cmd
+Description: A list of the subnet IDs to use with the service. Leaving empty will use the private subnets
 
 Type:
 `list(string)`
 
 Default:
 `[]`
+
+#### task\_definition
+
+Description: The family:revision or full ARN of the task definition to launch. If you are deploying software with Jenkins, you can ignore this; this is used with task definitions that are managed in Terraform. If unset, the first run will use an Nginx 'hello-world' task def. Terraform will not update the task definition in the service if this value has changed.
+
+Type:
+`string`
+
+Default:
+`""`
 
 ## Outputs
 
 The following outputs are exported:
 
-#### task\_role\_name
+#### cloudwatch\_log\_group\_name
+
+Description: The name of the created CloudWatch log group
+
+#### task\_role\_arn
 
 Description: The ARN of the IAM Role created for the Fargate service
 
