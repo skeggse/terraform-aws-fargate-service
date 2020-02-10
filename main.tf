@@ -1,4 +1,6 @@
 ## Fargate Task IAM Role
+# This needs to be provided to any task definition you manage and
+# is created here for convenience.
 resource "aws_iam_role" "task" {
   name = "${local.env_name}-fg-role"
   assume_role_policy = file(
@@ -23,30 +25,11 @@ resource "aws_security_group" "task" {
   tags = merge(local.tags, { "Name" : "${local.env_name}-sg" })
 }
 
-module "task_definition" {
-  source                   = "git@github.com:mixmaxhq/terraform-aws-ecs-task-definition?ref=v1.2.2"
-  family                   = local.env_name
-  name                     = local.env_name
-  cpu                      = var.cpu
-  memory                   = var.memory
-  environment              = var.environment_vars
-  image                    = var.image
-  network_mode             = "awsvpc"
-  portMappings             = local.port_mappings
-  command                  = var.task_command
-  requires_compatibilities = ["FARGATE"]
-  secrets                  = var.secrets
-  tags                     = local.tags
-  task_role_arn            = aws_iam_role.task.arn
-  execution_role_arn       = "arn:aws:iam::${local.aws_account_id}:role/ecsTaskExecutionRole"
-  logConfiguration         = var.log_config
-}
-
 resource "aws_ecs_service" "service" {
   name            = local.env_name
   cluster         = local.ecs_cluster
   launch_type     = "FARGATE"
-  task_definition = module.task_definition.arn
+  task_definition = local.task_definition
   desired_count   = 2
   tags            = local.tags
   propagate_tags  = "SERVICE"
@@ -62,11 +45,11 @@ resource "aws_ecs_service" "service" {
   }
 
   network_configuration {
-    subnets         = local.private_subnets
+    subnets         = local.service_subnets
     security_groups = [aws_security_group.task.id]
   }
 
   lifecycle {
-    ignore_changes = ["desired_count"]
+    ignore_changes = ["desired_count", "task_definition"]
   }
 }
