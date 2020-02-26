@@ -109,6 +109,6 @@ variable "cpu_low_threshold" {
 
 variable "task_definition" {
   description = "The family:revision or full ARN of the task definition to launch. If you are deploying software with Jenkins, you can ignore this; this is used with task definitions that are managed in Terraform. If unset, the first run will use an Nginx 'hello-world' task def. Terraform will not update the task definition in the service if this value has changed."
-  type        = "string"
+  type        = string
   default     = ""
 }

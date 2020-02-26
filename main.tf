@@ -50,6 +50,6 @@ resource "aws_ecs_service" "service" {
   }
 
   lifecycle {
-    ignore_changes = ["desired_count", "task_definition"]
+    ignore_changes = [desired_count, task_definition]
   }
 }
