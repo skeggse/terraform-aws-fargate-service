@@ -30,7 +30,7 @@ resource "aws_ecs_service" "service" {
   cluster         = local.ecs_cluster
   launch_type     = "FARGATE"
   task_definition = local.task_definition
-  desired_count   = 2
+  desired_count   = var.max_capacity
   tags            = local.tags
   propagate_tags  = "SERVICE"
 
