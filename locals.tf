@@ -6,7 +6,7 @@ locals {
   aws_account_id = module.global_constants.aws_account_id[var.environment]
   aws_region     = module.global_constants.aws_region[var.environment]
   vpc_id         = module.global_constants.vpc_id[var.environment]
-  env_name       = "${var.name}-${var.environment}"
+  env_name       = var.fargate_service_name_override == "" ? "${var.name}-${var.environment}" : var.fargate_service_name_override
 
   # Networking
   private_subnets = module.global_constants.private_subnets[var.environment]
@@ -20,7 +20,7 @@ locals {
   # Tagging
   default_tags = {
     "Environment" : var.environment
-    "Name" : var.name
+    "Name" : local.env_name
     "Public" : var.is_public
     "Service" : var.service
   }

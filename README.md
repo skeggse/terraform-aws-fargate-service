@@ -106,6 +106,16 @@ Type:
 Default:
 `{}`
 
+#### fargate\_service\_name\_override
+
+Description: This parameter allows you to set to the Fargate service name explicitly. This is useful in cases where you need something other than the default {var.name}-{var.environment} naming convention
+
+Type:
+`string`
+
+Default:
+`""`
+
 #### is\_public
 
 Description: A boolean describing if the service is public or internal only. In this module, this is only used for tagging.
@@ -233,6 +243,10 @@ Description: The name of the created CloudWatch log group
 #### task\_role\_arn
 
 Description: The ARN of the IAM Role created for the Fargate service
+
+#### task\_role\_name
+
+Description: The name of the IAM Role created for the Fargate service
 
 #### task\_sg\_id
 
