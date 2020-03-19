@@ -94,7 +94,17 @@ Type:
 `number`
 
 Default:
-`20`
+`30`
+
+#### cpu\_scaling\_enabled
+
+Description: A boolean if CPU-based autoscaling should be turned on or off
+
+Type:
+`bool`
+
+Default:
+`true`
 
 #### custom\_tags
 
@@ -201,16 +211,6 @@ Type:
 
 Default:
 `90`
-
-#### scaling\_enabled
-
-Description: A boolean if autoscaling should be turned on or off
-
-Type:
-`bool`
-
-Default:
-`true`
 
 #### service\_subnets
 
