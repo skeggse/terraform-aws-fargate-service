@@ -7,7 +7,7 @@ resource "aws_appautoscaling_target" "ecs" {
 }
 
 resource "aws_appautoscaling_policy" "up" {
-  count              = var.scaling_enabled ? 1 : 0
+  count              = var.cpu_scaling_enabled ? 1 : 0
   name               = "${local.env_name}-scale-up"
   service_namespace  = aws_appautoscaling_target.ecs.service_namespace
   resource_id        = aws_appautoscaling_target.ecs.resource_id
@@ -26,7 +26,7 @@ resource "aws_appautoscaling_policy" "up" {
 }
 
 resource "aws_appautoscaling_policy" "down" {
-  count              = var.scaling_enabled ? 1 : 0
+  count              = var.cpu_scaling_enabled ? 1 : 0
   name               = "${local.env_name}-scale-down"
   service_namespace  = aws_appautoscaling_target.ecs.service_namespace
   resource_id        = aws_appautoscaling_target.ecs.resource_id
@@ -45,7 +45,7 @@ resource "aws_appautoscaling_policy" "down" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_high" {
-  count               = var.scaling_enabled ? 1 : 0
+  count               = var.cpu_scaling_enabled ? 1 : 0
   alarm_name          = "${local.env_name}-cpu-high-alarm"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = var.cloudwatch_evaluation_periods
@@ -67,9 +67,9 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_high" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_low" {
-  count               = var.scaling_enabled ? 1 : 0
+  count               = var.cpu_scaling_enabled ? 1 : 0
   alarm_name          = "${local.env_name}-cpu-low-alarm"
-  comparison_operator = "GreaterThanThreshold"
+  comparison_operator = "LessThanThreshold"
   evaluation_periods  = var.cloudwatch_evaluation_periods
   metric_name         = "CPUUtilization"
   namespace           = "AWS/ECS"

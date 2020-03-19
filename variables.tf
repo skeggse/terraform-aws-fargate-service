@@ -41,8 +41,8 @@ variable "service_subnets" {
   default     = []
 }
 
-variable "scaling_enabled" {
-  description = "A boolean if autoscaling should be turned on or off"
+variable "cpu_scaling_enabled" {
+  description = "A boolean if CPU-based autoscaling should be turned on or off"
   type        = bool
   default     = true
 }
@@ -104,7 +104,7 @@ variable "cpu_high_threshold" {
 variable "cpu_low_threshold" {
   description = "The CPU percentage to be considered 'low' for autoscaling purposes. This was set to a 'safe' value to prevent scaling down when it's not a good idea, but please adjust this higher for your app if possible."
   type        = number
-  default     = 20
+  default     = 30
 }
 
 variable "task_definition" {
