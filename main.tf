@@ -34,6 +34,16 @@ resource "aws_ecs_service" "service" {
   tags            = local.tags
   propagate_tags  = "SERVICE"
 
+  dynamic "capacity_provider_strategy" {
+    for_each = var.capacity_provider_strategies
+
+    content {
+      capacity_provider = capacity_provider_strategy.value.capacity_provider
+      weight            = capacity_provider_strategy.value.weight
+      base              = capacity_provider_strategy.value.base
+    }
+  }
+
   dynamic "load_balancer" {
     for_each = var.load_balancer_config
 
