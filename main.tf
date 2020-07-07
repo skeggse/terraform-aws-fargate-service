@@ -28,7 +28,7 @@ resource "aws_security_group" "task" {
 resource "aws_ecs_service" "service" {
   name            = local.env_name
   cluster         = local.ecs_cluster
-  launch_type     = "FARGATE"
+  launch_type     = length(var.capacity_provider_strategies) == 0 ? "FARGATE" : null
   task_definition = local.task_definition
   desired_count   = var.max_capacity
   tags            = local.tags
