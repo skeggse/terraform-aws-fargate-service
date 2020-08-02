@@ -36,9 +36,8 @@ variable "load_balancer_config" {
 }
 
 variable "service_subnets" {
-  description = "A list of the subnet IDs to use with the service. Leaving empty will use the private subnets"
+  description = "A list of the subnet IDs to use with the service."
   type        = list(string)
-  default     = []
 }
 
 variable "cpu_scaling_enabled" {
@@ -127,4 +126,10 @@ variable "capacity_provider_strategies" {
     weight            = number
   }))
   default = []
+}
+
+variable "ecs_cluster_name" {
+  description = "The name of the ECS cluster. If left blank, this module will use the `environment` variable as the ECS cluster name."
+  type        = string
+  default     = null
 }

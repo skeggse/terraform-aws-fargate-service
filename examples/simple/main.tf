@@ -7,6 +7,8 @@ module "worker" {
   service     = var.service
   environment = var.environment
 
+  service_subnets = local.service_subnets
+
   # If you used `mixmax fargate bootstrap-service`, you probably want to
   # omit this value.
   task_definition = module.fargate_bootstrap_task_definition.arn

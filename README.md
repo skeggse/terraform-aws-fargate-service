@@ -31,6 +31,13 @@ terraform-docs md document . >> README.md
 
 The following variables are required:
 
+#### ecs\_cluster\_name
+
+Description: The name of the ECS cluster. If left blank, this module will use the `environment` variable as the ECS cluster name.
+
+Type:
+`string`
+
 #### environment
 
 Description: The environment to deploy into. Some valid values are production, staging, engineering.
@@ -52,9 +59,32 @@ Description: The name of the service this app is associated with; ie 'send' if t
 Type:
 `string`
 
+#### service\_subnets
+
+Description: A list of the subnet IDs to use with the service.
+
+Type:
+`list(string)`
+
 ### Optional Variables
 
 The following variables are optional (have default values):
+
+#### capacity\_provider\_strategies
+
+Description: The capacity provider (supported by the configured cluster) to use to provision tasks for the service
+
+Type:
+```hcl
+list(object({
+    capacity_provider = string
+    base              = number
+    weight            = number
+  }))
+```
+
+Default:
+`[]`
 
 #### cloudwatch\_evaluation\_periods
 
@@ -211,16 +241,6 @@ Type:
 
 Default:
 `90`
-
-#### service\_subnets
-
-Description: A list of the subnet IDs to use with the service. Leaving empty will use the private subnets
-
-Type:
-`list(string)`
-
-Default:
-`[]`
 
 #### task\_definition
 
