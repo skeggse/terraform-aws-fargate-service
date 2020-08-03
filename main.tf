@@ -56,7 +56,7 @@ resource "aws_ecs_service" "service" {
   }
 
   network_configuration {
-    subnets         = local.service_subnets
+    subnets         = var.service_subnets
     security_groups = [aws_security_group.task.id]
   }
 

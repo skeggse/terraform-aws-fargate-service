@@ -1,20 +1,12 @@
-module "global_constants" {
-  source = "git::ssh://git@github.com/mixmaxhq/terraform-global-constants.git?ref=v3.0.0"
-}
-
 locals {
-  aws_account_id = module.global_constants.aws_account_id[var.environment]
-  aws_region     = module.global_constants.aws_region[var.environment]
-  vpc_id         = module.global_constants.vpc_id[var.environment]
+  aws_account_id = data.aws_caller_identity.current.account_id
+  aws_region     = data.aws_region.region.name
   env_name       = var.fargate_service_name_override == "" ? "${var.name}-${var.environment}" : var.fargate_service_name_override
-
-  # Networking
-  private_subnets = module.global_constants.private_subnets[var.environment]
-  service_subnets = length(var.service_subnets) == 0 ? local.private_subnets : var.service_subnets
+  vpc_id         = data.aws_subnet.subnet.vpc_id
 
   # ECS
-  ecs_cluster      = "arn:aws:ecs:${local.aws_region}:${local.aws_account_id}:cluster/${var.environment}"
-  ecs_cluster_name = var.environment
+  ecs_cluster      = "arn:aws:ecs:${local.aws_region}:${local.aws_account_id}:cluster/${local.ecs_cluster_name}"
+  ecs_cluster_name = var.ecs_cluster_name != null ? var.ecs_cluster_name : var.environment
   task_definition  = var.task_definition == "" ? local.env_name : var.task_definition
 
   # Tagging
@@ -27,3 +19,15 @@ locals {
   tags = merge(var.custom_tags, local.default_tags)
 
 }
+
+# We use this to find the VPC ID to set up for the Security group. We use the first entry
+# as a representative sample of the rest.
+data "aws_subnet" "subnet" {
+  id = var.service_subnets[0]
+}
+
+# Expose the account ID
+data "aws_caller_identity" "current" {}
+
+# Expose the region
+data "aws_region" "region" {}
