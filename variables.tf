@@ -85,7 +85,7 @@ variable "scale_down_adjustment" {
 variable "cloudwatch_evaluation_periods" {
   description = "The number of times a metric must exceed thresholds before an alarm triggers. For example, if `period` is set to 60 seconds, and this is set to 2, a given threshold must have been exceeded twice over 120 seconds."
   type        = number
-  default     = 2
+  default     = 1
 }
 
 variable "cloudwatch_period" {
