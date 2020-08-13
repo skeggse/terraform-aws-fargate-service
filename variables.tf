@@ -133,3 +133,9 @@ variable "ecs_cluster_name" {
   type        = string
   default     = null
 }
+
+variable "health_check_grace_period" {
+  description = "The load balancer health check grace period in seconds. This defines how long ECS will ignore failing load balancer checks on newly instantiated tasks. This is not required; additionally, this is only valid for services configured to use load balancers."
+  type        = number
+  default     = null
+}
