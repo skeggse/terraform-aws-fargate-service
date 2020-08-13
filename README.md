@@ -45,6 +45,13 @@ Description: The environment to deploy into. Some valid values are production, s
 Type:
 `string`
 
+#### health\_check\_grace\_period
+
+Description: The load balancer health check grace period in seconds. This defines how long ECS will ignore failing load balancer checks on newly instantiated tasks. This is not required; additionally, this is only valid for services configured to use load balancers.
+
+Type:
+`number`
+
 #### name
 
 Description: The name of the application to launch

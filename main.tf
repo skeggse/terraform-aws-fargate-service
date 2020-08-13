@@ -35,6 +35,8 @@ resource "aws_ecs_service" "service" {
   propagate_tags   = "SERVICE"
   platform_version = "1.4.0"
 
+  health_check_grace_period_seconds = var.health_check_grace_period
+
   dynamic "capacity_provider_strategy" {
     for_each = var.capacity_provider_strategies
 
