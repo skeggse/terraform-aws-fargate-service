@@ -101,7 +101,7 @@ Type:
 `number`
 
 Default:
-`2`
+`1`
 
 #### cloudwatch\_period
 
@@ -152,6 +152,16 @@ Type:
 
 Default:
 `{}`
+
+#### deployment\_maximum\_percent
+
+Description: The upper limit (as a percentage of the service's desiredCount) of the number of running tasks that can be running in a service during a deployment.
+
+Type:
+`number`
+
+Default:
+`200`
 
 #### fargate\_service\_name\_override
 

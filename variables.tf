@@ -139,3 +139,9 @@ variable "health_check_grace_period" {
   type        = number
   default     = null
 }
+
+variable "deployment_maximum_percent" {
+  description = "The upper limit (as a percentage of the service's desiredCount) of the number of running tasks that can be running in a service during a deployment."
+  type        = number
+  default     = 200
+}
