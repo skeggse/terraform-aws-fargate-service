@@ -1,3 +1,3 @@
 name        = "terraform-aws-fargate-service-test"
-environment = "staging"
+environment = "sandbox"
 service     = "testing"

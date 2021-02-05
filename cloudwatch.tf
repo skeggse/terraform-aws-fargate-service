@@ -18,9 +18,27 @@ resource "aws_appautoscaling_policy" "up" {
     cooldown                = var.scale_up_cooldown
     metric_aggregation_type = "Average"
 
+    # If we are between `cpu_high_threshold` and 1/3rd of maximum,
+    # scale up by `scale_up_adjustment`.
     step_adjustment {
       metric_interval_lower_bound = 0
+      metric_interval_upper_bound = (100 - var.cpu_high_threshold) / 3
       scaling_adjustment          = var.scale_up_adjustment
+    }
+
+    # If we are between 1/3rd and 2/3rds of the way between `cpu_high_threshold` and maximum (100%),
+    # scale up by twice the `scale_up_adjustment`.
+    step_adjustment {
+      metric_interval_lower_bound = (100 - var.cpu_high_threshold) / 3
+      metric_interval_upper_bound = ((100 - var.cpu_high_threshold) / 3) * 2
+      scaling_adjustment          = var.scale_up_adjustment * 2
+    }
+
+    # If we are between 2/3rds of `cpu_high_threshold` and maximum (100%),
+    # scale up by three times the `scale_up_adjustment`.
+    step_adjustment {
+      metric_interval_lower_bound = ((100 - var.cpu_high_threshold) / 3) * 2
+      scaling_adjustment          = var.scale_up_adjustment * 3
     }
   }
 }
