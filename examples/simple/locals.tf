@@ -1,8 +1,4 @@
-module "global_constants" {
-  source = "git::ssh://git@github.com/mixmaxhq/terraform-global-constants.git?ref=v3.3.0"
-}
-
 locals {
-  aws_account_id  = module.global_constants.aws_account_id[var.environment]
-  service_subnets = module.global_constants.private_subnets[var.environment]
+  aws_account_id  = "123456789"
+  service_subnets = ["subnet-12345678"]
 }

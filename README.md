@@ -6,7 +6,7 @@ For creating a Fargate service with a built-in application load balancer, see th
 
 ## Usage
 
-An example deployable application can be found in the [examples/simple](examples/simple) directory.
+This requires Terraform 0.13+. An example deployable application can be found in the [examples/simple](examples/simple) directory.
 
 ## Notes
 
