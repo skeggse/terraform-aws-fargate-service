@@ -110,7 +110,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_low" {
 # This needs to be provided to any task definition you manage and
 # is created here for convenience.
 module "cloudwatch_log_group" {
-  source      = "git::ssh://git@github.com/mixmaxhq/terraform-aws-cloudwatch-log-group?ref=v2.0.0"
+  source      = "git::ssh://git@github.com/mixmaxhq/terraform-aws-cloudwatch-log-group?ref=v3.0.0"
   name        = "/aws/fargate/${var.environment}/${local.env_name}"
   service     = var.service
   environment = var.environment
